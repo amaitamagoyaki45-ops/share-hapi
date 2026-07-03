@@ -553,7 +553,7 @@
 
     table {
       width: 100%;
-      min-width: 680px;
+      min-width: 620px;
       border-collapse: collapse;
     }
 
@@ -803,6 +803,70 @@
         text-align: left;
       }
 
+
+      .page {
+        width: 100%;
+        max-width: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .hero,
+      .card {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .grid {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .rank-row {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .count-stepper {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .count-btn {
+        flex: 0 0 48px;
+      }
+
+      .count-input {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .share-row {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .summary-cards {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .copy-area .btn {
+        width: 100%;
+      }
+
+      .table-wrap {
+        margin-left: 0;
+        margin-right: 0;
+      }
+
+
+      .hero::after {
+        right: 12px;
+        bottom: 8px;
+        font-size: 48px;
+      }
+
       th,
       td {
         padding: 11px 12px;
@@ -818,6 +882,86 @@
       color: var(--danger);
       font-weight: 800;
       line-height: 1.6;
+    }
+
+  
+    html {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    .page,
+    .grid,
+    .card,
+    section,
+    .rank-list,
+    .rank-row,
+    .summary-cards,
+    .share-preview,
+    .diff-box,
+    .generated-image-preview {
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .table-wrap {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .admin-details {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .admin-details summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 15px 16px;
+      cursor: pointer;
+      list-style: none;
+      font-weight: 900;
+      color: #6d4a30;
+      user-select: none;
+    }
+
+    .admin-details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .admin-details summary::after {
+      content: "＋";
+      display: inline-grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: #fff8ee;
+      color: var(--primary-dark);
+      border: 1px solid var(--line);
+      font-weight: 900;
+    }
+
+    .admin-details[open] summary::after {
+      content: "−";
+    }
+
+    .admin-details-body {
+      padding: 0 14px 14px;
     }
 
   </style>
@@ -1531,25 +1675,10 @@
           </div>
         </div>
 
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>職位</th>
-                <th class="num">人数</th>
-                <th class="num">支払い比率</th>
-                <th class="num">1人あたり支払額</th>
-                <th class="num">職位ごとの合計支払額</th>
-              </tr>
-            </thead>
-            <tbody>${rows}</tbody>
-          </table>
-        </div>
-
         <div class="share-preview">
           <div class="share-preview-header">
             <h3>支払者向け共有プレビュー</h3>
-            <span>コピー対象</span>
+            <span>まずここを共有</span>
           </div>
           <div class="share-list">
             ${buildSharePreviewRows(result)}
@@ -1558,13 +1687,6 @@
             共有用コピーには、人数・支払い比率・職位ごとの合計支払額は含めません。
             同じ職位内で差額調整がある場合のみ、支払額候補を「または」で表示します。
           </div>
-        </div>
-
-        <div class="diff-box">
-          <div>端数処理：${formatNumber(result.roundUnit)}円単位</div>
-          <div>調整方法：${adjustmentNames[result.effectiveAdjustmentMethod]}</div>
-          <div>丸め直後の差額：${initialDiffSign}${formatYen(result.initialDiff)}</div>
-          <div>メモ：${result.adjustmentNote}</div>
         </div>
 
         <div class="copy-area">
@@ -1585,9 +1707,36 @@
           </div>
         </div>
 
-        <p class="footer-note">
-          複数人の職位で差額を割り切れない場合、表の「1人あたり支払額」には平均額と内訳を表示します。
-        </p>
+        <details class="admin-details">
+          <summary>管理用の詳細を表示</summary>
+          <div class="admin-details-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>職位</th>
+                    <th class="num">人数</th>
+                    <th class="num">支払い比率</th>
+                    <th class="num">1人あたり支払額</th>
+                    <th class="num">職位ごとの合計支払額</th>
+                  </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+              </table>
+            </div>
+
+            <div class="diff-box">
+              <div>端数処理：${formatNumber(result.roundUnit)}円単位</div>
+              <div>調整方法：${adjustmentNames[result.effectiveAdjustmentMethod]}</div>
+              <div>丸め直後の差額：${initialDiffSign}${formatYen(result.initialDiff)}</div>
+              <div>メモ：${result.adjustmentNote}</div>
+            </div>
+
+            <p class="footer-note">
+              この詳細表は管理用です。共有用コピー・共有用画像には、人数・支払い比率・職位ごとの合計支払額は含めません。
+            </p>
+          </div>
+        </details>
       `;
 
       document.getElementById("copyTableBtn").addEventListener("click", copyTableText);
